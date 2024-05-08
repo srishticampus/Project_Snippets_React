@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useEffect } from "react";
-import './register.css'
+
 function Login() {
   const [data, setData] = useState({
     email: "",
@@ -13,20 +12,26 @@ function Login() {
     password: "",
   });
 
-  let formValid;
+  const Navigate = useNavigate();
 
   const formValidating = (fieldName, value) => {
     if (!value.trim()) {
-      formValid = false;
       return `${fieldName} is required`;
     }
-    if (data.email && data.password) {
-      formValid = true;
+
+    if (fieldName === "Email" && !value.endsWith("@gmail.com")) {
+      return "Email must be a valid Gmail address";
     }
+
+    if (fieldName === "Password") {
+      const passwordRegex = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[A-Z]).{6,}$/;
+      if (!passwordRegex.test(value)) {
+        return "Password must contain at least one number, one special character, and one capital letter";
+      }
+    }
+
     return "";
   };
-
-  const Navigate = useNavigate();
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -34,8 +39,7 @@ function Login() {
       ...data,
       [name]: value,
     });
-
-    setErrors((preError) => ({ ...preError, [name]: "" }));
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
   };
 
   const handleSubmit = (e) => {
@@ -43,65 +47,75 @@ function Login() {
     let errors = {};
     errors.email = formValidating("Email", data.email);
     errors.password = formValidating("Password", data.password);
-
     setErrors(errors);
-    if (data.email && data.password) {
-      formValid = true;
+
+    if (!errors.email && !errors.password) {
+      alert("login successfully");
     }
   };
+
   return (
     <div className="container mt-5">
-    <div className="formdesign">
-      <form onSubmit={handleSubmit}>
-        <div className="">
-          <h4 className="text-center mt-5">Sign in</h4>
-          <label className="" htmlFor="form-controler-email">
-            Email
-          </label>
-          <input
-            type="email"
-            className="form-control form-input"
-            id="form-controler-email"
-            placeholder=""
-            required=""
-            onChange={handleInputChange}
-            name="email"
-            value={data.email}
-          />
-          
-          {errors.email && <div className="text-danger">{errors.email}</div>}
-          <span className="glyphicon form-control-feedback" />
-        </div>
-        <div className="form-group has-feedback" id="form-group">
-        <label className="" htmlFor="form-controler-password">
-            Password
-          </label>
-          <input
-            type="password"
-            className="form-control form-input"
-            id="form-controler-password m-3"
-            placeholder=""
-            required=""
-            name="password"
-            onChange={handleInputChange}
-            value={data.password}
-          />
-          
-          {errors.password && (
-            <div className="text-danger">{errors.password}</div>
-          )}
-          <span className="glyphicon form-control-feedback" />
-        </div>
-        <div className="text-center m-3"><button type="submit" className="btn btn-primary">
-        Login
-      </button></div>
-        
-        <div className="text">
-          <p>
-            Don't have an account? <Link to="/register" className="text-decoration-none">Register</Link>
-          </p>
-        </div>
-      </form></div>
+      <div
+        className=" p-2 border "
+        style={{
+          margin: "1% 30%",
+          boxShadow: " rgba(0, 0, 0, 0.24) 0px 3px 8px", borderRadius: "16px",
+        }}
+      >
+        <form onSubmit={handleSubmit} className="p-3">
+          <div className="mb-3">
+            <h4 className="text-center mt-5">Sign in</h4>
+            <label className="" htmlFor="form-controler-email">
+              Email
+            </label>
+            <input
+              type="email"
+              className="form-control form-input"
+              id="form-controler-email"
+              placeholder=""
+              required=""
+              onChange={handleInputChange}
+              name="email"
+              value={data.email}
+            />
+            {errors.email && <div className="text-danger">{errors.email}</div>}
+            <span className="glyphicon form-control-feedback" />
+          </div>
+          <div className="form-group has-feedback" id="form-group">
+            <label className="" htmlFor="form-controler-password">
+              Password
+            </label>
+            <input
+              type="password"
+              className="form-control form-input"
+              id="form-controler-password m-3"
+              placeholder=""
+              required=""
+              name="password"
+              onChange={handleInputChange}
+              value={data.password}
+            />
+            {errors.password && (
+              <div className="text-danger">{errors.password}</div>
+            )}
+            <span className="glyphicon form-control-feedback" />
+          </div>
+          <div className="text-center">
+            <button type="submit" className="btn btn-primary m-4">
+              Login
+            </button>
+          </div>
+          <div className="text">
+            <h6>
+              Don't have an account?{" "}
+              <Link to="/register" className="text-decoration-none">
+                Register
+              </Link>
+            </h6>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
