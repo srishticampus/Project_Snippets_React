@@ -103,10 +103,11 @@ function Registration() {
       }}
   return (
     <div className="container mt-5">
-    <h4 className="text-center">Sign up</h4>
 
     <div className=" ">
       <form onSubmit={handleSubmit} className="formdesign">
+      <h4 className="text-center">Sign up</h4>
+
         <div className="input-box">
           <div className="label">
             {" "}
@@ -177,7 +178,6 @@ function Registration() {
             placeholder="Contact Number"
             name="contact"
             className="form-control m-2"
-
             onChange={handleInputChange}
           />
 
@@ -185,10 +185,6 @@ function Registration() {
             <div className="text-danger errortext">{errors.contact}</div>
           )}
         </div>
-
-        
-         
-
         <div className="input-box">
           <div className="label">
             {" "}
